@@ -19,8 +19,8 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  const fromCache = () => caches.match(req, { cacheName: CACHE }).then((hit) => hit || caches.match(req, { ignoreSearch: true })) // 同じ URL を先に探す
-    .then((hit) => hit || (req.mode === "navigate" ? caches.match("./index.html") : undefined))
+  const fromCache = () => caches.match(req, { cacheName: CACHE }).then((hit) => hit || caches.match(req, { cacheName: CACHE, ignoreSearch: true })) // 同じ URL を先に探す
+    .then((hit) => hit || (req.mode === "navigate" ? caches.match("./index.html", { cacheName: CACHE }) : undefined))
     .catch(() => undefined); // 保存したものを読めなくても、必ず返事を返す（ネットの返事か Response.error()）
   // ネットの返事と保存し直しは、イベントの中で waitUntil に預ける（4秒で保存したものを返したあとに届いても、新しい版を保存できる）
   const net = fetch(req);
