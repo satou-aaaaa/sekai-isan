@@ -32,6 +32,18 @@ const T = [
 const BYN = Object.fromEntries(T.map((r) => [r[0], { p: r[1].split("・"), y: r[2], t: r[3], k: r[4] || 0, c: r[5] ? r[5].split("・") : [] }]));
 // 「新原・奴山古墳群」は名前に「・」があるので1つにまとめ直す
 BYN["宗像・沖ノ島と関連遺産群"].c = ["新原・奴山古墳群"];
+// 2026-11-08 から足した、ふくまれる場所（文化遺産オンラインの各解説の構成資産の一覧から。games/sekai-isan-more.md）
+const C2T = { 古都京都の文化財: "清水寺・延暦寺・平等院・二条城・龍安寺・天龍寺", 古都奈良の文化財: "薬師寺・唐招提寺・元興寺・春日山原始林", 日光の社寺: "輪王寺・二荒山神社", 琉球王国のグスク及び関連遺産群: "中城城跡・座喜味城跡・斎場御嶽・玉陵",
+  紀伊山地の霊場と参詣道: "熊野本宮大社・金剛峯寺・金峯山寺・那智大滝", 石見銀山遺跡: "熊谷家住宅・温泉津", 平泉: "毛越寺・無量光院跡", 明治日本の産業革命遺産: "松下村塾・韮山反射炉", 長崎と天草地方の潜伏キリシタン関連遺産: "大浦天主堂・原城跡",
+  "百舌鳥・古市古墳群": "仁徳天皇陵古墳・応神天皇陵古墳", "北海道・北東北の縄文遺跡群": "大湯環状列石・是川石器時代遺跡", "飛鳥・藤原の宮都": "石舞台古墳・高松塚古墳・キトラ古墳" };
+for (const [n, c] of Object.entries(C2T)) BYN[n].c2 = c.split("・");
+// 豆知識から当てる問題の、決め手の言葉（解説のページの文から）→ 遺産
+const MK = [["池田輝政", "姫路城"], ["谷川の植物", "屋久島"], ["昆虫およそ2,200種", "白神山地"], ["チシマザサ", "白神山地"], ["東寺", "古都京都の文化財"], ["3〜5階", "白川郷・五箇山の合掌造り集落"], ["数十人の大家族", "白川郷・五箇山の合掌造り集落"], ["ヤン・レツル", "原爆ドーム"], ["1241年", "厳島神社"], ["弥山", "厳島神社"],
+  ["東大寺の金堂", "古都奈良の文化財"], ["春日大社", "古都奈良の文化財"], ["1616年", "日光の社寺"], ["大猷院", "日光の社寺"], ["男体山", "日光の社寺"], ["三つに分かれていた国", "琉球王国のグスク及び関連遺産群"], ["3,000mm", "紀伊山地の霊場と参詣道"], ["修験道", "紀伊山地の霊場と参詣道"],
+  ["海の氷", "知床"], ["サケやマス", "知床"], ["ボニンブルー", "小笠原諸島"], ["昆虫の約25%", "小笠原諸島"], ["北の拠点", "平泉"], ["霊山", "富士山"], ["講がつくられ", "富士山"], ["生糸", "富岡製糸場と絹産業遺産群"], ["工業化", "明治日本の産業革命遺産"],
+  ["地球全体", "ル・コルビュジエの建築作品"], ["海の安全", "宗像・沖ノ島と関連遺産群"], ["埴輪", "百舌鳥・古市古墳群"], ["大陸の東のはし", "奄美大島、徳之島、沖縄島北部及び西表島"], ["サワガニ", "奄美大島、徳之島、沖縄島北部及び西表島"], ["田畑を耕すより前", "北海道・北東北の縄文遺跡群"], ["機械化", "佐渡島の金山"], ["2つの時代の都", "飛鳥・藤原の宮都"]];
+// 豆知識の文だけでは取りちがえやすい組（同じ問題に入れない）
+const CONF = [["石見銀山遺跡", "佐渡島の金山"], ["宗像・沖ノ島と関連遺産群", "百舌鳥・古市古墳群"], ["百舌鳥・古市古墳群", "飛鳥・藤原の宮都"], ["古都奈良の文化財", "飛鳥・藤原の宮都"], ["富岡製糸場と絹産業遺産群", "明治日本の産業革命遺産"], ["厳島神社", "宗像・沖ノ島と関連遺産群"], ["小笠原諸島", "奄美大島、徳之島、沖縄島北部及び西表島"], ["日光の社寺", "紀伊山地の霊場と参詣道"], ["日光の社寺", "富士山"], ["紀伊山地の霊場と参詣道", "富士山"]];
 const quoted = (t) => (t.match(/「([^」]+)」/) || [])[1];
 
 // ---- 1. 問題（ブラウザを使わない）----
@@ -66,7 +78,9 @@ const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
     if (k === "naiyo") { const s = owner(P.ans); if (!isS(nm) || !s || s.n !== nm || P.opts.filter((o) => owner(o)?.n === nm).length !== 1) why.push("説明の答え"); }
     if (k === "kenmei") { const pf = t.match(/^(.+?)にある世界遺産/)?.[1]; if (!pf || !P.opts.every(isS) || P.opts.filter((o) => BYN[o].p.includes(pf)).length !== 1 || !BYN[P.ans].p.includes(pf)) why.push("県から遺産"); }
     if (k === "saki") { const [a, b] = P.opts; if (!isS(a) || !isS(b) || BYN[a].y === BYN[b].y || P.ans !== (BYN[a].y < BYN[b].y ? a : b)) why.push("どっちが先"); }
-    if (k === "kosei") { const hit = T.map((r) => r[0]).filter((s) => BYN[s].c.includes(nm)); if (hit.length !== 1 || P.ans !== hit[0] || !P.opts.every(isS)) why.push("ふくまれる場所"); }
+    if (k === "kosei") { const hit = T.map((r) => r[0]).filter((s) => BYN[s].c.includes(nm) || (q.v === 2 && (BYN[s].c2 || []).includes(nm))); if (hit.length !== 1 || P.ans !== hit[0] || !P.opts.every(isS) || (q.v === 2) !== !!(BYN[hit[0]].c2 || []).includes(nm)) why.push("ふくまれる場所"); }
+    if (k === "mame") { const hit = MK.filter(([w]) => nm.includes(w)); if (hit.length !== 1 || P.ans !== hit[0][1] || !P.opts.every(isS) || P.opts.some((o) => o !== P.ans && CONF.some(([a, b]) => (a === o && b === P.ans) || (b === o && a === P.ans))) || q.v !== 2 || P.mame) why.push("豆知識の答え"); }
+    if (P.mame && ([...P.mame].length > 40 || P.at.length !== 1)) why.push("豆知識");
     if (k === "narabe") { const ok = P.opts.filter((o) => { const ys = o.split(" → ").map((x) => BYN[x]?.y); return ys.length === 3 && ys.every(Boolean) && ys[0] < ys[1] && ys[1] < ys[2]; });
       if (ok.length !== 1 || ok[0] !== P.ans) why.push(`並びの答え（${ok.join("/")}）`); }
     if (k === "onaji") { if (!isS(nm) || !P.opts.every(isS) || P.opts.filter((o) => BYN[o].y === BYN[nm].y).length !== 1 || BYN[P.ans].y !== BYN[nm].y || P.opts.includes(nm)) why.push("同じ年"); }
@@ -79,7 +93,7 @@ const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
   check("問題：とことん・練習で出る問題は300問以上（好きなだけ遊んでも、すぐに同じ問題にならない）", all.length >= 300, all.length);
   const per = G.KINDS.map((k) => [k.id, G.keysOf(k.id).length]).filter(([, n]) => n < 10);
   check("問題：どの種類も10問以上ある", per.length === 0, per.join(" "));
-  check("問題：種類は12（やさしい4・ふつう4・むずかしい4）", G.KINDS.length === 12 && [0, 1, 2].map((l) => G.kindsOf(l).length).join() === "4,4,4", [0, 1, 2].map((l) => G.kindsOf(l).length).join());
+  check("問題：種類は13（やさしい4・ふつう5・むずかしい4。豆知識からは 2026-11-08 から）", G.KINDS.length === 13 && [0, 1, 2].map((l) => G.kindsOf(l).length).join() === "4,5,4", [0, 1, 2].map((l) => G.kindsOf(l).length).join());
   check("知らない key（constructor など）は問題にしない", G.make("constructor") === null && G.make("__proto__") === null && G.make("toString") === null);
   const longLook = G.KINDS.filter((k) => [...k.look].length > 45).map((k) => k.id);
   check("ヒントは45字以内（やさしい日本語。一文を短く）", !longLook.length, longLook.join(","));
@@ -108,9 +122,14 @@ const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
     if (i < 60) [...dk, ...hk].forEach((k) => cover.add(k));
   }
   check("今日の5問（やさしい2・ふつう2・むずかしい1、種類は重ねない）と上級（むずかしい3・今日のむずかしいと別）を3年分作れる", bad.length === 0, bad.slice(0, 5).join(","));
-  check("2か月のうちに12種類が全部出る・前の日と同じ5問の日が無い", cover.size === 12 && sameAsPrev === 0, `${cover.size}種類・前の日と同じ ${sameAsPrev}日`);
+  check("2か月のうちに13種類が全部出る・前の日と同じ5問の日が無い", cover.size === 13 && sameAsPrev === 0, `${cover.size}種類・前の日と同じ ${sameAsPrev}日`);
   // 過去の日の問題を変えない：はじめの日の5問を控えと比べる（gen.js・BANK を変えたら、ここが落ちる）
   check("過去の日の問題が変わらない（第1回 2026-11-07 の5問と上級）", JSON.stringify([G.dailyTags("2026-11-07"), G.hardTags("2026-11-07")]) === FIRST_DAY, JSON.stringify([G.dailyTags("2026-11-07"), G.hardTags("2026-11-07")]));
+  // 追加の種類・問題は 2026-11-08 から（それより前の日は前のまま）。前の800日に出ない・あとの日には出る
+  { let early = 0, late = 0; for (let i = 0; i < 800; i++) { const d = new Date(Date.parse("2026-11-07") - i * 864e5).toISOString().slice(0, 10); for (const t of [...G.dailyTags(d), ...G.hardTags(d)]) if (G.BANK[t].v) early++; }
+    for (let i = 0; i < 400; i++) { const d = new Date(Date.parse("2026-11-08") + i * 864e5).toISOString().slice(0, 10); for (const t of [...G.dailyTags(d), ...G.hardTags(d)]) if (G.BANK[t].v) late++; }
+    check("追加の問題（豆知識から・ふくまれる場所の追加）は 2026-11-08 から出る（前の日の問題は変わらない）", early === 0 && late > 100, `前 ${early}・後 ${late}`); }
+  { const withM = Object.keys(G.BANK).filter((t) => G.make(t).mame).length; check("正解のあとの豆知識が、遺産1つの問題の多くに出る（40字以内）", withM >= 250, withM); }
 }
 // ---- 2. ファイルの中身 ----
 const html = readFileSync(path.join(root, "index.html"), "utf8"), gen = readFileSync(path.join(root, "gen.js"), "utf8");
@@ -390,6 +409,21 @@ try {
       const cd = await q.evaluate(() => { const cs = [...document.querySelectorAll("#scene .card")]; return { n: cs.length, txt: cs.map((c) => c.textContent), w: Math.max(0, ...cs.map((c) => c.getBoundingClientRect().right)), sw: document.documentElement.scrollWidth }; });
       const s = G.SITES[18];
       check("正解すると、答えにかかわる遺産の札が出る（どっちが先は2枚。正式な名前・区分・年・特徴。幅320pxではみ出さない）", cd.n === 2 && cd.txt.some((t) => t.includes(s.f) && t.includes(s.y + "年") && t.includes(s.t + "遺産") && s.x.every((x) => t.includes(x))) && cd.w <= 320 && cd.sw <= 320, JSON.stringify(cd).slice(0, 300));
+      await q.context().close();
+    }
+    // 正解すると、遺産1つの問題では豆知識が出る（豆知識から当てる問題では出さない）
+    {
+      const q = await newPage(320); await closeHow(q); await q.click("#go-e"); await q.waitForTimeout(150);
+      const got = [];
+      for (const tag of ["kosei|26-c1", "mame|12-0-0"]) {
+        await q.evaluate((t) => { __km.save((x) => { x.runs.e.list[x.runs.e.res.length] = t; }); __km.play(); }, tag);
+        await q.waitForTimeout(150);
+        const ans = await q.evaluate(() => __km.cur().P.ans);
+        await q.locator(".ch", { hasText: ans }).first().click(); await q.waitForTimeout(100);
+        got.push(await q.evaluate(() => { const m = document.querySelector(".verdict .why.mame"); return m ? m.textContent : ""; }));
+        await q.click("#next"); await q.waitForTimeout(100);
+      }
+      check("正解すると豆知識が出る（遺産1つの問題）・豆知識から当てる問題では出さない", got[0].startsWith("豆知識：") && G.MAME[26].some((m) => got[0].includes(m)) && got[1] === "", JSON.stringify(got));
       await q.context().close();
     }
     check("幅320px・とても大きい文字でも横にはみ出さない", bad.length === 0, bad.join(" / "));

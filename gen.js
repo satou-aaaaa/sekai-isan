@@ -50,6 +50,47 @@
     { n: "佐渡島の金山", f: "佐渡島の金山", p: ["新潟県"], y: 2024, t: "文化", e: "🪙", x: ["17世紀に、世界で最も多く金をとった所だった", "西三川砂金山と相川鶴子金銀山から成る"], c: ["西三川砂金山", "相川鶴子金銀山"], u: BK + "hlinkL" },
     { n: "飛鳥・藤原の宮都", f: "飛鳥・藤原の宮都", p: ["奈良県"], y: 2026, t: "文化", e: "🏛️", x: ["6〜8世紀の都の移り変わりを示す遺跡の群れ", "日本列島で初めて生まれた古代の国家の都の跡"], c: [], u: BK + "hlink10_3" },
   ];
+  // 2026-11-08 から出す追加（過去の日の問題を変えないよう、日付で出し始める。V2DAY・kindsOn）
+  // 出どころは各遺産の解説のページ（文化庁「文化遺産オンライン」・環境省「普遍的価値」）。確かめ方は共有フォルダ games/sekai-isan-more.md
+  const V2DAY = "2026-11-08";
+  // ふくまれる場所（解説のページの構成資産の一覧から。今の c に足す）
+  const C2 = { 4: ["清水寺", "延暦寺", "平等院", "二条城", "龍安寺", "天龍寺"], 8: ["薬師寺", "唐招提寺", "元興寺", "春日山原始林"], 9: ["輪王寺", "二荒山神社"], 10: ["中城城跡", "座喜味城跡", "斎場御嶽", "玉陵"],
+    11: ["熊野本宮大社", "金剛峯寺", "金峯山寺", "那智大滝"], 13: ["熊谷家住宅", "温泉津"], 15: ["毛越寺", "無量光院跡"], 18: ["松下村塾", "韮山反射炉"], 21: ["大浦天主堂", "原城跡"],
+    22: ["仁徳天皇陵古墳", "応神天皇陵古墳"], 24: ["大湯環状列石", "是川石器時代遺跡"], 26: ["石舞台古墳", "高松塚古墳", "キトラ古墳"] };
+  // 豆知識（40字以内。解説のページの文から）。正解のあと、遺産が1つの問題で1つ出す
+  const MAME = {
+    1: ["1600年に城主になった大名・池田輝政のころの姿を伝える城", "城のまわりは、内と外の二重の堀で囲まれている"],
+    2: ["約2,000mの山があり、高さごとに植物の生え方が変わる島", "湿気の多い所に合う、谷川の植物や木にくっつく植物が育つ"],
+    3: ["哺乳類35種・鳥94種・昆虫およそ2,200種がすむ", "雪の多い土地らしく、森の地面にチシマザサなどが生える"],
+    4: ["北・西・東の三方を丘に囲まれた盆地にある", "8世紀に建てられた東寺から、16世紀の二条城までをふくむ"],
+    5: ["大きな茅葺き屋根の下は、3〜5階に分かれている", "屋根裏の部屋では、蚕を育てる仕事もしていた", "1棟に数十人の大家族が住むのがふつうだった"],
+    6: ["もとの建物は、チェコの建築家ヤン・レツルが設計した", "原爆は約600mの高さで爆発し、ドームの中心部は倒れずに残った"],
+    7: ["社殿の並びは12世紀に始まり、1241年に建て直された", "島の弥山（海抜530m）が、あがめる山とされた"],
+    8: ["東大寺の金堂は、世界最大の木造の建物とされる", "春日大社の建物は、おもに19世紀中ごろに建て直されたもの"],
+    9: ["1616年に初代将軍の霊廟が建てられ、1636年に大きく造り替えられた", "1653年、3代将軍家光の霊廟・大猷院が建てられた", "8世紀から、男体山を中心とする山岳信仰の聖地だった"],
+    10: ["14世紀中ごろ三つに分かれていた国が、15世紀前半に一つになった", "首里城は、王の住まいと国を治める役所を置くために築かれた"],
+    11: ["1,000〜2,000m級の山が走り、年に3,000mmをこす雨が森を育てる", "10世紀中ごろから11世紀にできた修験道の、中心の修行の場だった"],
+    12: ["海の氷ができる海の中で、世界でいちばん南にある", "川をのぼるサケやマスが、ヒグマや大きな鳥の大事な食べ物になる"],
+    13: ["日本海に面した県の、ほぼ真ん中にある", "東と西の世界で、ものや文明が行き来したことを示すあかし"],
+    14: ["東京から約1,000km南の、「ボニンブルー」の海にかこまれた島々", "植物の約4割・昆虫の約25%が、ここにしかいない種"],
+    15: ["11〜12世紀、仏教の理想の世界をめざして造られた北の拠点", "4つの庭園のうち3つは、神聖な山・金鶏山に向けて造られた"],
+    16: ["噴火をくり返したことから、霊山として多くの人にうやまわれた", "江戸のころ、江戸とその近くに講がつくられ、多くの人が山に登って拝んだ"],
+    17: ["よい生糸をたくさん作れるようにした、19〜20世紀の技術の進歩を示す", "世界で、絹がふつうの人にも使われるようになるきっかけになった"],
+    18: ["西洋から、西洋でない国へ、工業化がうまく移ったことを示す"],
+    19: ["3つの大陸・7か国にある17の建物で1つの遺産になっている", "建築が初めて、地球全体に広がったことを示すあかしとされる"],
+    20: ["海の安全を願う、今も生きている信仰の伝統とつながる"],
+    21: ["禁じられた時代に、まわりの社会や宗教と共に生きながら、信仰をひそかに続けた"],
+    22: ["長さ500m近い前方後円墳から20m台の墓まで、大きさも形もさまざま", "墓の丘は葬式の舞台で、図形のように形づくられ、埴輪でかざられた"],
+    23: ["昔は大陸の東のはしで、地面の動きで切りはなされて島々になった", "サワガニのなかまは、すべてここにしかいない種"],
+    24: ["田畑を耕すより前の、人のくらしと心の文化を示すあかし"],
+    25: ["世界の鉱山で機械化が進んだ16〜19世紀に、手作業の技術をみがいた"],
+    26: ["続く2つの時代の都の移り変わりから、国の中央の仕組みの誕生を示す"],
+  };
+  // 豆知識から当てる問題に使うもの [遺産, 何番目]（ほかの遺産にも当てはまりそうなもの・今の特徴と同じ中身のものは使わない）
+  const MAMEQ = [[1, 0], [2, 1], [3, 0], [3, 1], [4, 1], [5, 0], [5, 2], [6, 0], [7, 0], [7, 1], [8, 0], [8, 1], [9, 0], [9, 1], [9, 2], [10, 0], [11, 0], [11, 1], [12, 0], [12, 1], [14, 0], [14, 1], [15, 0], [16, 0], [16, 1], [17, 0], [18, 0], [19, 1], [20, 0], [22, 1], [23, 0], [23, 1], [24, 0], [25, 0], [26, 0]];
+  // 豆知識の文だけでは取りちがえやすい組（同じ問題の選び肢にしない）
+  const NEAR = [[13, 25], [20, 22], [22, 26], [20, 26], [8, 26], [0, 8], [0, 26], [17, 18], [7, 20], [14, 23], [9, 11], [9, 16], [11, 16], [2, 14], [2, 23], [14, 23]];
+  const near = (a, b) => NEAR.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
   const TYPES = ["文化", "自然"];
   const srcOf = (s) => (s.t === "自然" ? ["list", "env"] : ["list", "bunka"]);
   const PREFS = [...new Set(SITES.flatMap((s) => s.p))];
@@ -94,6 +135,10 @@
   SITES.forEach((s, i) => s.x.forEach((x, v) => { const R = rng(seedOf(`gen:naiyo:${i}:${v}`)), ds = pickN(R, SITES.filter((_, j) => j !== i), 3).map((d) => d.x[Math.floor(R() * 2)]);
     add("naiyo", `${i}-${v}`, { scene: Q(`「${s.n}」の説明として正しいのは？`), opts: [x, ...ds], ans: x, at: [i], src: srcOf(s),
       why: `${s.n}は「${s.x[0]}」「${s.x[1]}」とされます。` }); }));
+  // 豆知識 → 遺産（2026-11-08 から。取りちがえやすい組は選び肢にしない）
+  MAMEQ.forEach(([i, j]) => { const s = SITES[i]; for (let v = 0; v < 2; v++) { const R = rng(seedOf(`gen:mame:${i}:${j}:${v}`)), ds = pickN(R, SITES.filter((_, x) => x !== i && !near(i, x)), 3);
+    add("mame", `${i}-${j}-${v}`, { scene: Q(`「${MAME[i][j]}」。この世界遺産は？`), opts: [s.n, ...ds.map((d) => d.n)], ans: s.n, at: [i], src: srcOf(s), v: 2, nomame: 1,
+      why: `${info(s)}です。` }); } });
   // 都道府県 → 遺産（その県にある遺産ごとに1問）
   PREFS.forEach((p) => SITES.forEach((s, i) => { if (!s.p.includes(p)) return; const R = rng(seedOf(`gen:kenmei:${p}:${i}`)), ds = pickN(R, SITES.filter((x) => !x.p.includes(p)), 3);
     add("kenmei", `${p}-${i}`, { scene: Q(`${p}にある世界遺産はどれ？`), opts: [s.n, ...ds.map((d) => d.n)], ans: s.n, at: [i], src: ["list"],
@@ -109,6 +154,10 @@
   SITES.forEach((s, i) => s.c.forEach((c, v) => { const R = rng(seedOf(`gen:kosei:${i}:${v}`)), ds = pickN(R, SITES.filter((_, j) => j !== i), 3);
     add("kosei", `${i}-${v}`, { scene: Q(`「${c}」がふくまれる世界遺産は？`), opts: [s.n, ...ds.map((d) => d.n)], ans: s.n, at: [i], src: srcOf(s),
       why: `${c}は「${s.f}」の一部です。` }); }));
+  // ふくまれる場所（2026-11-08 から）
+  Object.keys(C2).forEach((k) => { const i = +k, s = SITES[i]; C2[k].forEach((c, v) => { const R = rng(seedOf(`gen:kosei2:${i}:${v}`)), ds = pickN(R, SITES.filter((_, j) => j !== i), 3);
+    add("kosei", `${i}-c${v}`, { scene: Q(`「${c}」がふくまれる世界遺産は？`), opts: [s.n, ...ds.map((d) => d.n)], ans: s.n, at: [i], src: srcOf(s), v: 2,
+      why: `${c}は「${s.f}」の一部です。` }); }); });
   // 登録の順に並べる（3つの年がちがう遺産。正しい順と、その並べ替え3つ）
   SITES.forEach((s, i) => { for (let v = 0; v < 2; v++) { const R = rng(seedOf(`gen:narabe:${i}:${v}`)), os = pickN(R, SITES.filter((x) => x.y !== s.y), 8);
     const b = os.find((x) => x.y !== s.y), c = os.find((x) => x.y !== s.y && x.y !== b.y); const ok = [s, b, c].sort((p, q) => p.y - q.y); // 並べ替えは年で（乱数は引かない）
@@ -136,6 +185,7 @@
     { id: "nen", lv: 1, name: "登録の年", look: "最初は1993年の4件。そのあと、ほぼ1〜2年に1件ずつ増えてきました。" },
     { id: "naiyo", lv: 1, name: "説明を選ぶ", look: "ほかの3つは、ほかの遺産の説明です。" },
     { id: "kenmei", lv: 1, name: "県から当てる", look: "その県の地名や、近くの名所を思い出しましょう。" },
+    { id: "mame", lv: 1, v: 2, name: "豆知識から", look: "年代・数・生き物の名前など、文の中の手がかりを1つ選びましょう。" },
     { id: "saki", lv: 1, name: "どっちが先", look: "1990年代の登録は、法隆寺・姫路城・屋久島・白神・京都・白川郷・広島の2件・奈良・日光。" },
     { id: "kosei", lv: 2, name: "ふくまれる場所", look: "寺・城・山・鉱山など、その場所の種類から考えましょう。" },
     { id: "narabe", lv: 2, name: "登録の順", look: "いちばん古いものと、いちばん新しいものを先に決めましょう。" },
@@ -152,21 +202,24 @@
   function make(tag) {
     const q = Object.prototype.hasOwnProperty.call(BANK, tag) ? BANK[tag] : null; if (!q) return null;
     const k = BY[q.kind], opts = q.opts.length === 2 || q.fix ? q.opts.slice() : pickN(rng(seedOf(tag)), q.opts, q.opts.length);
-    return { tag, kind: q.kind, lv: k.lv, name: k.name, look: k.look, scene: q.scene, text: q.text || "", opts, ans: q.ans, why: q.why, at: q.at, src: q.src.map((s) => SRC[s]) };
+    return { tag, kind: q.kind, lv: k.lv, name: k.name, look: k.look, scene: q.scene, text: q.text || "", opts, ans: q.ans, why: q.why, at: q.at, src: q.src.map((s) => SRC[s]),
+      mame: (!q.nomame && q.at && q.at.length === 1 && MAME[q.at[0]] && MAME[q.at[0]][seedOf("mame:" + tag) % MAME[q.at[0]].length]) || "" };
   }
-  const pickKey = (R, kind) => { const ks = keysOf(kind); return ks[Math.floor(R() * ks.length)]; };
+  // 2026-11-08 より前の日は、追加の種類・問題を出さない（過去の日の問題を変えない）
+  const kindsOn = (lv, date) => KINDS.filter((k) => k.lv === lv && (!k.v || date >= V2DAY)).map((k) => k.id);
+  const pickKey = (R, kind, date) => { const ks = B.filter((q) => q.kind === kind && (!q.v || date >= V2DAY)).map((q) => q.key); return ks[Math.floor(R() * ks.length)]; };
 
   // 今日の5問（やさしい2・ふつう2・むずかしい1）。種類は重ねない
   function dailyTags(date) {
-    const R = rng(seedOf("day:" + date)), e = pickN(R, kindsOf(0), 2), m = pickN(R, kindsOf(1), 2), h = pickN(R, kindsOf(2), 1);
-    return [...e, ...m, ...h].map((id) => pickKey(R, id));
+    const R = rng(seedOf("day:" + date)), e = pickN(R, kindsOn(0, date), 2), m = pickN(R, kindsOn(1, date), 2), h = pickN(R, kindsOn(2, date), 1);
+    return [...e, ...m, ...h].map((id) => pickKey(R, id, date));
   }
   // 上級の3問（むずかしいだけ・今日の5問のむずかしいとは別の種類）
   function hardTags(date) {
-    const dh = BANK[dailyTags(date)[4]].kind, R = rng(seedOf("hard:" + date)), h = pickN(R, kindsOf(2).filter((x) => x !== dh), 3);
-    return h.map((id) => pickKey(R, id));
+    const dh = BANK[dailyTags(date)[4]].kind, R = rng(seedOf("hard:" + date)), h = pickN(R, kindsOn(2, date).filter((x) => x !== dh), 3);
+    return h.map((id) => pickKey(R, id, date));
   }
 
-  const G = { KINDS, BY, LV, SRC, SITES, TYPES, PREFS, YEARS, BANK, keysOf, kindsOf, seedOf, rng, make, dailyTags, hardTags, pickN };
+  const G = { KINDS, BY, LV, SRC, SITES, TYPES, PREFS, YEARS, C2, MAME, MAMEQ, NEAR, V2DAY, kindsOn, BANK, keysOf, kindsOf, seedOf, rng, make, dailyTags, hardTags, pickN };
   if (typeof module !== "undefined" && module.exports) module.exports = G; else root.ISAN = G;
 })(typeof self !== "undefined" ? self : this);
