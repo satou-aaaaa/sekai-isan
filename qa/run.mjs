@@ -35,7 +35,7 @@ BYN["宗像・沖ノ島と関連遺産群"].c = ["新原・奴山古墳群"];
 const quoted = (t) => (t.match(/「([^」]+)」/) || [])[1];
 
 // ---- 1. 問題（ブラウザを使わない）----
-const FIRST_DAY = '[["toku|11-0","shurui|7","naiyo|17-0","saki|25-0","kosei|8-3"],["onaji|15-0","kazu|0","narabe|7-1"]]';
+const FIRST_DAY = '[["shizen|2-0","shurui|8","nen|19","kenmei|奈良県-26","kazu|24"],["onaji|3-1","narabe|13-0","kosei|0-0"]]';
 const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
 {
   const all = Object.values(G.BANK), bad = [];
@@ -96,7 +96,7 @@ const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
 {
   // 今日の5問・上級の組み方（3年分）
   const bad = [], cover = new Set(); let sameAsPrev = 0, prev = "";
-  const d0 = Date.parse("2026-11-08");
+  const d0 = Date.parse("2026-11-07");
   const kd = (t) => G.BANK[t].kind;
   for (let i = 0; i < 365 * 3; i++) {
     const d = new Date(d0 + i * 864e5).toISOString().slice(0, 10), dl = G.dailyTags(d), hl = G.hardTags(d);
@@ -110,7 +110,7 @@ const TWO = new Set(["shurui", "saki"]); // 2つから選ぶ種類
   check("今日の5問（やさしい2・ふつう2・むずかしい1、種類は重ねない）と上級（むずかしい3・今日のむずかしいと別）を3年分作れる", bad.length === 0, bad.slice(0, 5).join(","));
   check("2か月のうちに12種類が全部出る・前の日と同じ5問の日が無い", cover.size === 12 && sameAsPrev === 0, `${cover.size}種類・前の日と同じ ${sameAsPrev}日`);
   // 過去の日の問題を変えない：はじめの日の5問を控えと比べる（gen.js・BANK を変えたら、ここが落ちる）
-  check("過去の日の問題が変わらない（第1回 2026-11-08 の5問と上級）", JSON.stringify([G.dailyTags("2026-11-08"), G.hardTags("2026-11-08")]) === FIRST_DAY, JSON.stringify([G.dailyTags("2026-11-08"), G.hardTags("2026-11-08")]));
+  check("過去の日の問題が変わらない（第1回 2026-11-07 の5問と上級）", JSON.stringify([G.dailyTags("2026-11-07"), G.hardTags("2026-11-07")]) === FIRST_DAY, JSON.stringify([G.dailyTags("2026-11-07"), G.hardTags("2026-11-07")]));
 }
 // ---- 2. ファイルの中身 ----
 const html = readFileSync(path.join(root, "index.html"), "utf8"), gen = readFileSync(path.join(root, "gen.js"), "utf8");
@@ -306,7 +306,7 @@ try {
 
   // カレンダー・あとから：過去の日の記録を置いて見る
   {
-    // 第1回（2026-11-08）から日がたった日に時計を合わせる（第1回の日でも、取りこぼした日を確かめられる）
+    // 第1回（2026-11-07）から日がたった日に時計を合わせる（第1回の日でも、取りこぼした日を確かめられる）
     const cctx = await browser.newContext({ viewport: { width: 390, height: 800 } }); await cctx.clock.setFixedTime(new Date("2026-11-17T03:00:00Z"));
     const T2 = "2026-11-17", dayBefore = (n) => new Date(Date.parse(T2) - n * 864e5).toISOString().slice(0, 10);
     const q = await newPage(390, cctx);
@@ -315,7 +315,7 @@ try {
     check("ホームの「続けて」は、きのうを休んだら — （休んだ日を責めない）", (await q.textContent(".stats")).includes("—"));
     await q.click("#go-cal");
     const lateList = await q.evaluate(() => __km.lateDays(__km.load()));
-    const exp = [1, 4, 5, 6, 7].map(dayBefore).filter((d) => d >= "2026-11-08");
+    const exp = [1, 4, 5, 6, 7].map(dayBefore).filter((d) => d >= "2026-11-07");
     check("カレンダー：取りこぼした過去7日（第1回より後）を押せる", JSON.stringify(lateList) === JSON.stringify(exp), lateList.join(","));
     check("カレンダー：遊んだ日は★の数の文字も付く", (await q.locator(".cal .c.p3").count()) + (await q.locator(".cal .c.p2").count()) + (await q.locator(".cal .c.p1").count()) >= (dayBefore(3).slice(0, 7) === T2.slice(0, 7) ? 2 : 0));
     if (lateList.length) {
@@ -418,7 +418,7 @@ try {
 
 // 引き継ぎコード（shared-workflows template/qa/transfer-check.mjs）
 try {
-  const sample = { "isan-v1": JSON.stringify({ v: 1, tut: true, days: { "2026-11-08": { m: [0, 1, 0, 0, 2], k: ["toku", "shurui", "naiyo", "saki", "kosei"] } }, hdays: {}, adays: {}, dex: { toku: 1, shurui: 1, naiyo: 1, saki: 1, kosei: 1 }, runs: {}, kofi: {}, ach: {}, ebest: 7, elast: null, t: 1 }), "isan-fs": "3" };
+  const sample = { "isan-v1": JSON.stringify({ v: 1, tut: true, days: { "2026-11-07": { m: [0, 1, 0, 0, 2], k: ["toku", "shurui", "naiyo", "saki", "kosei"] } }, hdays: {}, adays: {}, dex: { toku: 1, shurui: 1, naiyo: 1, saki: 1, kosei: 1 }, runs: {}, kofi: {}, ach: {}, ebest: 7, elast: null, t: 1 }), "isan-fs": "3" };
   await checkTransfer({ browser, url, game: "sekai-isan", sample, check, open: async (pg) => { if (await pg.locator("#howto[open]").count()) await pg.click("#howto-ok"); } });
 } catch (e) { check("引き継ぎの検査が最後まで動く", false, e.message.split("\n")[0]); }
 await browser.close();
