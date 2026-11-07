@@ -1,0 +1,29 @@
+{
+  "name": "世界遺産あて",
+  "short_name": "世界遺産あて",
+  "description": "日本の世界遺産27件の場所・登録の年・種類・特徴を当てる1日5問（文化庁・環境省の解説にもとづく）",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#f6f1e7",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
